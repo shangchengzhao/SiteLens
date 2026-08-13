@@ -1,0 +1,30 @@
+.missingKey {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  padding: 24px;
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.workspace {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 260px 1fr 320px;
+}
+
+.queueColumn {
+  min-height: 0;
+}
+
+.detailsColumn {
+  min-height: 0;
+}

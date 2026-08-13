@@ -1,0 +1,55 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+  flex-shrink: 0;
+}
+
+.left {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.brand {
+  font-weight: 800;
+  font-size: 16px;
+}
+
+.fileName {
+  color: var(--color-text-muted);
+  font-size: 13px;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.stat {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.flagged {
+  font-size: 13px;
+  color: var(--color-warning);
+  font-weight: 600;
+}
+
+.downloadButton {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  background: var(--color-primary);
+  color: var(--color-primary-contrast);
+  font-weight: 600;
+}
+
+.downloadButton:hover {
+  filter: brightness(1.05);
+}

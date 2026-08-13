@@ -1,0 +1,71 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.navButton {
+  padding: 8px 14px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 6px;
+  background: var(--color-surface);
+  font-weight: 600;
+}
+
+.navButton:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.navButton:not(:disabled):hover {
+  background: var(--color-neutral-bg);
+}
+
+.statusButtons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.statusButton {
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-surface);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.statusButton:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.statusButtonActive.verified {
+  background: var(--color-success-bg);
+  border-color: var(--color-success);
+  color: var(--color-success);
+}
+
+.statusButtonActive.mismatch {
+  background: var(--color-danger-bg);
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+
+.statusButtonActive.needs_review {
+  background: var(--color-warning-bg);
+  border-color: var(--color-warning);
+  color: var(--color-warning);
+}
+
+.statusButtonActive.unable_to_verify {
+  background: var(--color-neutral-bg);
+  border-color: var(--color-neutral);
+  color: var(--color-neutral);
+}
