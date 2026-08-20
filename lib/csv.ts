@@ -1,6 +1,8 @@
 import Papa from "papaparse";
 import type { ColumnMapping, Dataset, LocationRecord, SourceRow } from "./types";
 import { emptyVerification } from "./types";
+import { getSourceBusinessName, getSourceEuiCategory, matchFacilityTypeCode } from "./sourceFields";
+import { getEffectiveLocationFields } from "./verifiedFields";
 
 const LAT_NAMES = ["latitude", "lat", "y"];
 const LNG_NAMES = ["longitude", "lon", "lng", "long", "x"];
@@ -103,6 +105,10 @@ export function buildDataset(
 
     const hasValidSourceCoords = isValidLatLng(lat, lng);
 
+    const sourceBusinessName = getSourceBusinessName(row);
+    const sourceEuiCategory = getSourceEuiCategory(row);
+    const matchedFacilityType = sourceEuiCategory ? matchFacilityTypeCode(sourceEuiCategory) : null;
+
     return {
       internalId,
       rowIndex: index,
@@ -110,7 +116,12 @@ export function buildDataset(
       resolvedLocation: hasValidSourceCoords
         ? { latitude: lat, longitude: lng, method: "source_coordinates", error: null }
         : { latitude: null, longitude: null, method: "unresolved", error: null },
-      verification: emptyVerification(),
+      verification: {
+        ...emptyVerification(),
+        businessName: sourceBusinessName ?? "",
+        facilityType: matchedFacilityType,
+      },
+      addressConflict: null,
     };
   });
 
@@ -119,8 +130,11 @@ export function buildDataset(
 
 const EXPORT_COLUMNS = [
   "sitelens_verification_status",
-  "sitelens_verified_facility_type",
+  "sitelens_verified_EUI_category",
   "sitelens_verified_business_name",
+  "sitelens_verified_address",
+  "sitelens_verified_latitude",
+  "sitelens_verified_longitude",
   "sitelens_reviewer_notes",
   "sitelens_verified_at",
 ] as const;
@@ -128,9 +142,24 @@ const EXPORT_COLUMNS = [
 export function exportDatasetToCsv(dataset: Dataset): string {
   const rows = dataset.records.map((record) => {
     const row: SourceRow = { ...record.source };
+    const effective = getEffectiveLocationFields(record, dataset.columnMapping);
+
     row["sitelens_verification_status"] = record.verification.status ?? "";
-    row["sitelens_verified_facility_type"] = record.verification.facilityType ?? "";
+    row["sitelens_verified_EUI_category"] = record.verification.facilityType ?? "";
     row["sitelens_verified_business_name"] = record.verification.businessName ?? "";
+    row["sitelens_verified_address"] = effective.addressLocked
+      ? ""
+      : effective.effectiveAddress ?? "";
+    row["sitelens_verified_latitude"] = effective.coordinatesLocked
+      ? ""
+      : effective.effectiveLatitude != null
+        ? String(effective.effectiveLatitude)
+        : "";
+    row["sitelens_verified_longitude"] = effective.coordinatesLocked
+      ? ""
+      : effective.effectiveLongitude != null
+        ? String(effective.effectiveLongitude)
+        : "";
     row["sitelens_reviewer_notes"] = record.verification.notes ?? "";
     row["sitelens_verified_at"] = record.verification.verifiedAt ?? "";
     return row;

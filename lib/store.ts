@@ -24,6 +24,7 @@ interface AppState {
 
   updateVerification: (internalId: string, patch: Partial<Verification>) => void;
   updateResolvedLocation: (internalId: string, resolved: ResolvedLocation) => void;
+  setAddressConflict: (internalId: string, conflict: boolean) => void;
 
   setMapTypePreference: (mapType: MapType) => void;
 }
@@ -33,6 +34,9 @@ const VERIFICATION_FIELDS: (keyof Verification)[] = [
   "facilityType",
   "businessName",
   "notes",
+  "verifiedAddress",
+  "verifiedLatitude",
+  "verifiedLongitude",
 ];
 
 function patchChangesVerificationContent(
@@ -118,6 +122,17 @@ export const useAppStore = create<AppState>()(
           record.internalId === internalId
             ? { ...record, resolvedLocation: resolved }
             : record,
+        );
+
+        set({ dataset: { ...dataset, records } });
+      },
+
+      setAddressConflict: (internalId, conflict) => {
+        const dataset = get().dataset;
+        if (!dataset) return;
+
+        const records = dataset.records.map((record) =>
+          record.internalId === internalId ? { ...record, addressConflict: conflict } : record,
         );
 
         set({ dataset: { ...dataset, records } });

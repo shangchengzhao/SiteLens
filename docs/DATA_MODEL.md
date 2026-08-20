@@ -67,7 +67,7 @@ Common optional columns may include:
 id
 facility_id
 business_name
-facility_type
+facility_type (also recognized as: eui_category)
 name
 city
 state
@@ -118,8 +118,11 @@ Recommended exported columns:
 
 ```text
 sitelens_verification_status
-sitelens_verified_facility_type
+sitelens_verified_EUI_category
 sitelens_verified_business_name
+sitelens_verified_address
+sitelens_verified_latitude
+sitelens_verified_longitude
 sitelens_reviewer_notes
 sitelens_verified_at
 ```
@@ -149,7 +152,17 @@ If `not_reviewed` is used internally, decide explicitly whether it should be wri
 
 ---
 
-# Verified Facility Type
+# Verified EUI Category (Facility Type Taxonomy)
+
+Exported as `sitelens_verified_EUI_category`. Labeled "EUI category" in the UI. The underlying
+taxonomy and codes are unchanged from the original "facility type" concept — only the exported
+column name and UI label changed, to match the source column name (`eui_category`, also
+recognized as `facility_type`) used in practice.
+
+If a row's source `eui_category`/`facility_type` value exactly matches one of the codes or
+labels below (case-insensitive), the field is pre-filled with that category on load; the
+reviewer can always change it. A source value that doesn't match anything is left unselected
+and shown as a hint rather than forced into an incorrect category.
 
 Use a stable machine-readable taxonomy.
 
@@ -213,6 +226,9 @@ sitelens_verified_business_name
 
 This field represents the reviewer's accepted/entered business name.
 
+Pre-filled from a source `business_name`/`name` column when present (the reviewer can always
+change it); otherwise it starts blank.
+
 It may be:
 
 - copied from a Google Place result;
@@ -269,21 +285,34 @@ Recommended behavior:
 
 ---
 
-# Corrected Location Fields
+# Verified Address & Coordinates
 
-Not required for earliest P0, but recommended if users may correct locations.
-
-Potential fields:
+Columns:
 
 ```text
-sitelens_corrected_latitude
-sitelens_corrected_longitude
-sitelens_corrected_address
+sitelens_verified_address
+sitelens_verified_latitude
+sitelens_verified_longitude
 ```
 
-Never overwrite original coordinates/address.
+Never overwrite the original source address/coordinate columns — these are always separate,
+additive fields, blank when no correction applies.
 
-Blank means no correction was recorded.
+**Lock rule:** whichever field actually determined the resolved map location is treated as
+trusted and is read-only in the UI; the other field is open for reviewer correction:
+
+- Resolved from source coordinates → coordinates are locked; `sitelens_verified_address` is
+  editable (pre-filled from the source address column, if any) and exported.
+  `sitelens_verified_latitude`/`longitude` are left blank.
+- Resolved by geocoding an address (no valid source coordinates existed) → the address is
+  locked; `sitelens_verified_latitude`/`longitude` are editable (pre-filled from the geocoded
+  result) and exported. `sitelens_verified_address` is left blank.
+- Unresolved (neither worked) → both are editable and exported if filled in.
+
+**Conflict detection:** when a row has both a valid source coordinate and a source address, the
+address is silently geocoded (cached) and compared to the source coordinate. If they're more
+than ~1000m apart, the coordinate still wins for map placement (per "Option B — Address" above),
+but the address field is highlighted and flagged for reviewer correction.
 
 ---
 
@@ -348,9 +377,11 @@ id,address,latitude,longitude,source_type
 Example enriched output:
 
 ```csv
-id,address,latitude,longitude,source_type,sitelens_verification_status,sitelens_verified_facility_type,sitelens_verified_business_name,sitelens_reviewer_notes,sitelens_verified_at
-001,500 Industrial Way,34.123,-118.456,warehouse,verified,warehouse_dry,ABC Logistics,,2026-08-12T21:30:00-07:00
+id,address,latitude,longitude,source_type,sitelens_verification_status,sitelens_verified_EUI_category,sitelens_verified_business_name,sitelens_verified_address,sitelens_verified_latitude,sitelens_verified_longitude,sitelens_reviewer_notes,sitelens_verified_at
+001,500 Industrial Way,34.123,-118.456,warehouse,verified,warehouse_dry,ABC Logistics,500 Industrial Way,,,,2026-08-12T21:30:00-07:00
 ```
+
+(Coordinates were the resolution basis here, so they're locked and `sitelens_verified_latitude`/`longitude` are blank; the address was open for correction and happened to be left unchanged.)
 
 ---
 
@@ -378,8 +409,12 @@ A conceptual application object may resemble:
     "facilityType": "warehouse_dry",
     "businessName": "ABC Logistics",
     "notes": "",
-    "verifiedAt": "2026-08-12T21:30:00-07:00"
-  }
+    "verifiedAt": "2026-08-12T21:30:00-07:00",
+    "verifiedAddress": null,
+    "verifiedLatitude": null,
+    "verifiedLongitude": null
+  },
+  "addressConflict": false
 }
 ```
 

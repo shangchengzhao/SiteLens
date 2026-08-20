@@ -289,20 +289,21 @@ This panel answers:
 
 It should be visually and conceptually separate from the nearby facility layer.
 
+**Implementation note:** source and verification fields are merged into a single editable panel
+rather than two separate read-only/editable sections. Address and coordinates are pre-filled
+from source and shown editable or locked depending on which one determined the resolved
+location (see `DATA_MODEL.md` → "Verified Address & Coordinates"); business name and EUI
+category are pre-filled from source when available and always editable.
+
 Recommended fields:
 
-## Source
-
-- source address;
-- source latitude/longitude;
-- source business name, if present;
-- source facility type, if present.
-
-## Verification
-
+- address (editable unless it determined the resolved location; flagged if it conflicts with
+  the source coordinate);
+- latitude/longitude (editable unless they determined the resolved location);
+- business name, pre-filled from source if present, editable;
+- EUI category (formerly "facility type"), pre-filled from source if it matches a known
+  category, editable;
 - verification status;
-- verified business name;
-- verified facility type;
 - reviewer notes.
 
 ## Evidence

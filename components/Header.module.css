@@ -41,6 +41,19 @@
   font-weight: 600;
 }
 
+.newUploadButton {
+  padding: 8px 14px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 6px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.newUploadButton:hover {
+  background: var(--color-neutral-bg);
+}
+
 .downloadButton {
   padding: 8px 14px;
   border: none;

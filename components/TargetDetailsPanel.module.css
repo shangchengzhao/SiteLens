@@ -6,7 +6,7 @@
   padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 14px;
 }
 
 .empty {
@@ -14,28 +14,14 @@
   font-size: 13px;
 }
 
-.section {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.sectionTitle {
+.heading {
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--color-text-muted);
-}
-
-.field {
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.fieldMuted {
-  font-size: 13px;
-  color: var(--color-text-muted);
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .label {
@@ -55,6 +41,39 @@
   font-size: 13px;
   font-weight: 400;
   color: var(--color-text);
+}
+
+.lockedValue {
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-bg);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.conflict {
+  border-color: var(--color-danger);
+  background: var(--color-danger-bg);
+}
+
+.conflictHint {
+  font-size: 11px;
+  color: var(--color-danger);
+  font-weight: 400;
+}
+
+.hint {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  font-weight: 400;
+}
+
+.coordRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
 }
 
 .textarea {

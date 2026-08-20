@@ -23,6 +23,9 @@ export interface Verification {
   businessName: string;
   notes: string;
   verifiedAt: string | null;
+  verifiedAddress: string | null;
+  verifiedLatitude: number | null;
+  verifiedLongitude: number | null;
 }
 
 export interface LocationRecord {
@@ -31,6 +34,11 @@ export interface LocationRecord {
   source: SourceRow;
   resolvedLocation: ResolvedLocation;
   verification: Verification;
+  /**
+   * Whether the source address geocodes far enough from the source coordinate
+   * to be flagged as a mismatch. null = not checked yet or not applicable.
+   */
+  addressConflict: boolean | null;
 }
 
 export interface ColumnMapping {
@@ -54,5 +62,8 @@ export function emptyVerification(): Verification {
     businessName: "",
     notes: "",
     verifiedAt: null,
+    verifiedAddress: null,
+    verifiedLatitude: null,
+    verifiedLongitude: null,
   };
 }

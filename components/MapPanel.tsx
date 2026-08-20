@@ -13,6 +13,7 @@ import {
 import { useAppStore } from "@/lib/store";
 import { geocodeAddress } from "@/lib/geocode";
 import { isMapsAuthFailed, subscribeMapsAuthFailure } from "@/lib/mapsAuthFailure";
+import { ADDRESS_CONFLICT_THRESHOLD_METERS, haversineDistanceMeters } from "@/lib/geo";
 import type { LocationRecord } from "@/lib/types";
 import styles from "./MapPanel.module.css";
 
@@ -26,6 +27,7 @@ export function MapPanel({
   addressColumn: string | null;
 }) {
   const updateResolvedLocation = useAppStore((s) => s.updateResolvedLocation);
+  const setAddressConflict = useAppStore((s) => s.setAddressConflict);
   const geocodingLibrary = useMapsLibrary("geocoding");
   const map = useMap("sitelens-map");
   const apiStatus = useApiLoadingStatus();
@@ -58,6 +60,35 @@ export function MapPanel({
       updateResolvedLocation(record.internalId, result);
     });
   }, [record, geocodingLibrary, needsGeocoding, address, updateResolvedLocation]);
+
+  const needsConflictCheck = Boolean(
+    !apiFailed &&
+      record &&
+      resolved?.method === "source_coordinates" &&
+      record.addressConflict === null &&
+      address &&
+      address.trim() !== "",
+  );
+
+  useEffect(() => {
+    if (!record || !resolved || !geocodingLibrary || !needsConflictCheck || !address) return;
+    if (resolved.latitude == null || resolved.longitude == null) return;
+
+    const geocoder = new geocodingLibrary.Geocoder();
+    geocodeAddress(geocoder, address).then((result) => {
+      if (result.latitude == null || result.longitude == null) {
+        setAddressConflict(record.internalId, false);
+        return;
+      }
+      const distance = haversineDistanceMeters(
+        resolved.latitude as number,
+        resolved.longitude as number,
+        result.latitude,
+        result.longitude,
+      );
+      setAddressConflict(record.internalId, distance > ADDRESS_CONFLICT_THRESHOLD_METERS);
+    });
+  }, [record, resolved, geocodingLibrary, needsConflictCheck, address, setAddressConflict]);
 
   useEffect(() => {
     if (!map || !resolved || resolved.latitude == null || resolved.longitude == null) return;

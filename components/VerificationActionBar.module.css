@@ -2,18 +2,21 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 10px 16px;
-  border-top: 1px solid var(--color-border);
+  gap: 16px;
+  padding: 16px 20px;
+  margin: 0 12px 14px;
+  border-radius: 12px;
   background: var(--color-surface);
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
 .navButton {
-  padding: 8px 14px;
+  padding: 14px 22px;
   border: 1px solid var(--color-border-strong);
-  border-radius: 6px;
+  border-radius: 8px;
   background: var(--color-surface);
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 15px;
 }
 
 .navButton:disabled {
@@ -27,17 +30,18 @@
 
 .statusButtons {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   flex-wrap: wrap;
   justify-content: center;
 }
 
 .statusButton {
-  padding: 8px 14px;
-  border-radius: 6px;
-  border: 1px solid var(--color-border-strong);
+  padding: 14px 24px;
+  border-radius: 8px;
+  border: 2px solid var(--color-border-strong);
   background: var(--color-surface);
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 15px;
   color: var(--color-text);
 }
 

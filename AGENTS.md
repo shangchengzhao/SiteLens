@@ -144,3 +144,7 @@ Confirm that:
 - new verification fields are documented in `DATA_MODEL.md`.
 
 If you introduce a significant product or data-model decision, update the relevant specification document in the same change.
+
+## Bottom line
+- Don't delete any files
+- If you are not clear about the plan, verify with the user

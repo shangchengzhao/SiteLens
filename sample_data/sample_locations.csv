@@ -1,0 +1,17 @@
+id,business_name,address,latitude,longitude,eui_category
+001,ABC Logistics,,34.0522,-118.2437,warehouse
+002,Golden Gate Bakery,"1 Ferry Building, San Francisco, CA",,,
+003,University Test Site,"450 Serra Mall, Stanford, CA",,,
+004,Bad Coords Site,,999,999,
+005,Northgate Cold Storage,,40.7128,-74.0060,cold_storage
+006,No Location At All,,,,
+007,Empty String Coords,,"","",
+008,Garbage Coordinates,,not_a_number,also_bad,
+009,Riverside Data Center,,32.7767,-96.7970,data_center
+010,Nonsense Address,"asdkfj not a real place 12345",,,
+011,Duplicate Id Row A,,47.6062,-122.3321,office
+011,Duplicate Id Row B,,41.8781,-87.6298,office
+012,Both Coords And Address,"1600 Amphitheatre Parkway, Mountain View, CA",37.4220,-122.0841,office
+013,Out Of Range Latitude,,95.5,-100.2,
+014,Miami Distribution Hub,,25.7617,-80.1918,warehouse
+015,Conflicting Location,"350 5th Ave, New York, NY",34.0522,-118.2437,office
